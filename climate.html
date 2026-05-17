@@ -1,0 +1,541 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Climate Education</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500&family=Playfair+Display:ital,wght@0,700;1,400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --earth: #1a3a2a; --forest: #2d5a3d; --moss: #4a7c59;
+    --lime: #a8d572; --sun: #f5c842; --fire: #e8622a;
+    --smoke: #b0b8c1; --dark: #0d1f17; --cream: #f7f3ec;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body { font-family: 'DM Sans', sans-serif; background: var(--dark); color: var(--cream); overflow-x: hidden; }
+
+  /* NAV */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 1.2rem 4rem;
+    background: rgba(13,31,23,0.93); backdrop-filter: blur(12px);
+    border-bottom: 1px solid rgba(168,213,114,0.2);
+  }
+  .nav-logo { font-family: 'Bebas Neue', sans-serif; font-size: 1.8rem; letter-spacing: 3px; color: var(--lime); }
+  .nav-links { display: flex; gap: 2.5rem; list-style: none; }
+  .nav-links a { color: var(--smoke); text-decoration: none; font-size: 0.85rem; letter-spacing: 1.5px; text-transform: uppercase; transition: color 0.3s; }
+  .nav-links a:hover { color: var(--lime); }
+
+  /* PROGRESS */
+  .progress-bar { position: fixed; top: 0; left: 0; height: 3px; background: var(--lime); z-index: 200; width: 0%; transition: width 0.1s; }
+
+  /* HERO */
+  #hero {
+    min-height: 100vh; display: flex; flex-direction: column; justify-content: flex-end;
+    padding: 0 4rem 6rem; position: relative; overflow: hidden;
+    background: linear-gradient(170deg, #071209 0%, #0d2b18 40%, #1a3a2a 70%, #2d5a3d 100%);
+  }
+  .hero-video-bg { position: absolute; inset: 0; overflow: hidden; }
+  .hero-video-bg iframe {
+    position: absolute; top: 50%; left: 50%;
+    width: 177.78vh; height: 100vh;
+    min-width: 100%; min-height: 56.25vw;
+    transform: translate(-50%, -50%);
+    pointer-events: none; opacity: 0.22;
+  }
+  .hero-overlay {
+    position: absolute; inset: 0;
+    background: linear-gradient(to top, rgba(7,18,9,0.97) 0%, rgba(7,18,9,0.55) 40%, rgba(7,18,9,0.25) 100%);
+  }
+  .hero-globe {
+    position: absolute; top: -10%; right: -8%;
+    width: 60vw; height: 60vw; max-width: 700px; max-height: 700px;
+    border-radius: 50%;
+    background: radial-gradient(circle at 35% 35%, rgba(72,176,89,0.25) 0%, rgba(26,58,42,0.6) 40%, rgba(13,31,23,0.9) 80%);
+    border: 1px solid rgba(168,213,114,0.15);
+    animation: globePulse 8s ease-in-out infinite;
+    box-shadow: 0 0 80px rgba(168,213,114,0.08), inset 0 0 120px rgba(13,31,23,0.7);
+  }
+  @keyframes globePulse {
+    0%,100% { box-shadow: 0 0 80px rgba(168,213,114,0.08), inset 0 0 120px rgba(13,31,23,0.7); }
+    50% { box-shadow: 0 0 140px rgba(168,213,114,0.18), inset 0 0 120px rgba(13,31,23,0.7); }
+  }
+  .hero-eyebrow { font-size: 0.8rem; letter-spacing: 4px; text-transform: uppercase; color: var(--lime); margin-bottom: 1.5rem; display: flex; align-items: center; gap: 1rem; position: relative; z-index: 2; }
+  .hero-eyebrow::before { content: ''; display: block; width: 40px; height: 1px; background: var(--lime); }
+  .hero-title { font-family: 'Bebas Neue', sans-serif; font-size: clamp(5rem, 12vw, 11rem); line-height: 0.9; letter-spacing: 2px; color: var(--cream); position: relative; z-index: 2; }
+  .hero-title em { font-style: normal; color: var(--lime); display: block; }
+  .hero-subtitle { margin-top: 2rem; max-width: 480px; font-size: 1.05rem; line-height: 1.7; color: rgba(247,243,236,0.65); position: relative; z-index: 2; }
+  .hero-cta { margin-top: 3rem; display: flex; gap: 1.5rem; align-items: center; position: relative; z-index: 2; }
+  .btn-primary { background: var(--lime); color: var(--dark); padding: 1rem 2.5rem; border: none; border-radius: 3px; font-family: 'DM Sans', sans-serif; font-weight: 500; font-size: 0.9rem; letter-spacing: 1px; text-transform: uppercase; cursor: pointer; text-decoration: none; transition: background 0.3s, transform 0.2s; display: inline-block; }
+  .btn-primary:hover { background: #c5e88a; transform: translateY(-2px); }
+  .btn-outline { background: transparent; color: var(--cream); padding: 1rem 2.5rem; border: 1px solid rgba(247,243,236,0.3); border-radius: 3px; font-family: 'DM Sans', sans-serif; font-weight: 500; font-size: 0.9rem; letter-spacing: 1px; text-transform: uppercase; cursor: pointer; text-decoration: none; transition: border-color 0.3s, transform 0.2s; display: inline-block; }
+  .btn-outline:hover { border-color: var(--lime); color: var(--lime); transform: translateY(-2px); }
+  .hero-stats { position: absolute; right: 4rem; bottom: 6rem; display: flex; flex-direction: column; gap: 2rem; z-index: 2; }
+  .stat-item { text-align: right; }
+  .stat-num { font-family: 'Bebas Neue', sans-serif; font-size: 3rem; line-height: 1; color: var(--sun); }
+  .stat-label { font-size: 0.75rem; letter-spacing: 2px; text-transform: uppercase; color: rgba(247,243,236,0.5); margin-top: 0.2rem; }
+  .scroll-hint { position: absolute; bottom: 2rem; left: 50%; transform: translateX(-50%); display: flex; flex-direction: column; align-items: center; gap: 0.5rem; color: rgba(247,243,236,0.4); font-size: 0.75rem; letter-spacing: 2px; animation: bounce 2s ease-in-out infinite; }
+  .scroll-hint::after { content: ''; display: block; width: 1px; height: 40px; background: linear-gradient(to bottom, rgba(168,213,114,0.5), transparent); }
+  @keyframes bounce { 0%,100% { transform: translateX(-50%) translateY(0); } 50% { transform: translateX(-50%) translateY(6px); } }
+
+  /* SECTION SHARED */
+  section { padding: 8rem 4rem; }
+  .section-tag { font-size: 0.75rem; letter-spacing: 4px; text-transform: uppercase; color: var(--lime); margin-bottom: 1rem; display: flex; align-items: center; gap: 1rem; }
+  .section-tag::before { content: ''; width: 30px; height: 1px; background: var(--lime); }
+  .section-heading { font-family: 'Playfair Display', serif; font-size: clamp(2.5rem, 5vw, 4.5rem); line-height: 1.1; margin-bottom: 1.5rem; }
+  .section-intro { font-size: 1.05rem; line-height: 1.8; color: rgba(247,243,236,0.7); max-width: 650px; margin-bottom: 4rem; }
+
+  /* VIDEO SECTIONS */
+  .video-section-bg1 { background: #0a1810; }
+  .video-section-bg2 { background: #120805; }
+  .video-section-bg3 { background: #0a130d; }
+  .video-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; }
+  .video-wrap { position: relative; border-radius: 6px; overflow: hidden; border: 1px solid rgba(168,213,114,0.15); background: #000; }
+  .video-wrap iframe { width: 100%; aspect-ratio: 16/9; display: block; border: none; }
+  .video-label { padding: 1rem 1.2rem; background: #111f15; }
+  .video-label h4 { font-family: 'Playfair Display', serif; font-size: 1rem; margin-bottom: 0.3rem; }
+  .video-label p { font-size: 0.8rem; color: rgba(247,243,236,0.5); }
+
+  /* CAUSES */
+  #causes { background: var(--dark); }
+  .causes-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5px; background: rgba(168,213,114,0.1); border: 1px solid rgba(168,213,114,0.1); }
+  .cause-card { background: #0f2219; padding: 2.5rem; position: relative; overflow: hidden; transition: background 0.4s; }
+  .cause-card:hover { background: #162d21; }
+  .cause-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; background: var(--lime); transform: scaleX(0); transform-origin: left; transition: transform 0.4s; }
+  .cause-card:hover::before { transform: scaleX(1); }
+  .cause-img { width: 100%; height: 180px; object-fit: cover; margin-bottom: 1.5rem; border-radius: 2px; filter: saturate(0.7) brightness(0.85); transition: filter 0.4s; }
+  .cause-card:hover .cause-img { filter: saturate(1) brightness(0.95); }
+  .cause-number { font-family: 'Bebas Neue', sans-serif; font-size: 3.5rem; color: rgba(168,213,114,0.12); position: absolute; top: 1rem; right: 1.5rem; line-height: 1; }
+  .cause-title { font-family: 'Playfair Display', serif; font-size: 1.4rem; margin-bottom: 0.8rem; }
+  .cause-desc { font-size: 0.9rem; line-height: 1.7; color: rgba(247,243,236,0.6); }
+
+  /* PHOTO GALLERY */
+  #gallery { background: #071209; padding: 6rem 4rem; }
+  .gallery-heading { font-family: 'Bebas Neue', sans-serif; font-size: clamp(2.5rem, 5vw, 5rem); letter-spacing: 2px; margin-bottom: 0.5rem; }
+  .gallery-sub { color: rgba(247,243,236,0.55); font-size: 0.95rem; margin-bottom: 3rem; }
+  .photo-masonry { columns: 3; column-gap: 12px; }
+  .photo-item { break-inside: avoid; margin-bottom: 12px; position: relative; overflow: hidden; border-radius: 4px; cursor: pointer; }
+  .photo-item img { width: 100%; display: block; filter: saturate(0.8); transition: transform 0.5s, filter 0.5s; }
+  .photo-item:hover img { transform: scale(1.06); filter: saturate(1.1); }
+  .photo-caption { position: absolute; bottom: 0; left: 0; right: 0; padding: 1.5rem 1rem 1rem; background: linear-gradient(to top, rgba(7,18,9,0.9), transparent); transform: translateY(100%); transition: transform 0.4s; font-size: 0.82rem; color: rgba(247,243,236,0.9); }
+  .photo-item:hover .photo-caption { transform: translateY(0); }
+
+  /* LIGHTBOX */
+  .lightbox { display: none; position: fixed; inset: 0; z-index: 999; background: rgba(0,0,0,0.93); align-items: center; justify-content: center; }
+  .lightbox.open { display: flex; }
+  .lightbox img { max-width: 90vw; max-height: 88vh; border-radius: 4px; object-fit: contain; }
+  .lightbox-close { position: absolute; top: 1.5rem; right: 2rem; font-size: 2.5rem; color: var(--cream); cursor: pointer; line-height: 1; background: none; border: none; }
+  .lightbox-caption { position: absolute; bottom: 2rem; left: 50%; transform: translateX(-50%); font-size: 0.85rem; color: rgba(247,243,236,0.6); text-align: center; }
+
+  /* EFFECTS */
+  #effects { background: linear-gradient(135deg, #1a0a05 0%, #2a1008 50%, #1a0f05 100%); position: relative; }
+  #effects::before { content: ''; position: absolute; inset: 0; background: radial-gradient(ellipse 80% 50% at 50% 0%, rgba(232,98,42,0.1) 0%, transparent 60%); pointer-events: none; }
+  .effects-layout { display: grid; grid-template-columns: 1fr 1fr; gap: 4rem; align-items: start; }
+  .effects-left { position: sticky; top: 8rem; }
+  .effects-visual { width: 100%; aspect-ratio: 4/3; border-radius: 4px; overflow: hidden; position: relative; }
+  .effects-visual img { width: 100%; height: 100%; object-fit: cover; filter: sepia(0.3) saturate(1.3); }
+  .temp-badge { position: absolute; bottom: 1.5rem; left: 1.5rem; background: rgba(13,31,23,0.9); backdrop-filter: blur(8px); border: 1px solid rgba(232,98,42,0.4); padding: 1rem 1.5rem; border-radius: 4px; }
+  .temp-num { font-family: 'Bebas Neue', sans-serif; font-size: 2.5rem; color: var(--fire); line-height: 1; }
+  .temp-label { font-size: 0.75rem; color: rgba(247,243,236,0.6); letter-spacing: 1px; }
+  .effects-list { display: flex; flex-direction: column; gap: 1.5rem; }
+  .effect-item { padding: 2rem; border: 1px solid rgba(232,98,42,0.15); border-radius: 4px; background: rgba(232,98,42,0.04); transition: border-color 0.3s, background 0.3s; display: flex; gap: 1.5rem; align-items: flex-start; }
+  .effect-item:hover { border-color: rgba(232,98,42,0.4); background: rgba(232,98,42,0.08); }
+  .effect-icon { font-size: 2rem; flex-shrink: 0; line-height: 1; }
+  .effect-item h3 { font-family: 'Playfair Display', serif; font-size: 1.15rem; margin-bottom: 0.5rem; }
+  .effect-item p { font-size: 0.88rem; line-height: 1.7; color: rgba(247,243,236,0.6); }
+
+  /* SOLUTIONS */
+  #solutions { background: var(--dark); }
+  .solutions-hero-img { width: 100%; height: 400px; object-fit: cover; border-radius: 4px; margin-bottom: 4rem; filter: saturate(0.85); }
+  .solutions-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2rem; }
+  .solution-card { padding: 2.5rem; border-radius: 4px; position: relative; overflow: hidden; transition: transform 0.3s; }
+  .solution-card:hover { transform: translateY(-6px); }
+  .sol-1 { background: linear-gradient(135deg, #1e3a1e, #2d5a2d); }
+  .sol-2 { background: linear-gradient(135deg, #1a2f3a, #1e4a5a); }
+  .sol-3 { background: linear-gradient(135deg, #3a2a1a, #5a3a1e); }
+  .sol-4 { background: linear-gradient(135deg, #2a1a3a, #3a1a5a); }
+  .sol-5 { background: linear-gradient(135deg, #1a3a2a, #1e5a3a); }
+  .sol-6 { background: linear-gradient(135deg, #3a1a1a, #5a2a1a); }
+  .solution-card img { width: 100%; height: 160px; object-fit: cover; border-radius: 3px; margin-bottom: 1.5rem; filter: brightness(0.8); transition: filter 0.3s; }
+  .solution-card:hover img { filter: brightness(0.95); }
+  .solution-num { font-family: 'Bebas Neue', sans-serif; font-size: 0.85rem; letter-spacing: 3px; color: rgba(247,243,236,0.4); margin-bottom: 0.5rem; }
+  .solution-card h3 { font-family: 'Playfair Display', serif; font-size: 1.3rem; margin-bottom: 0.8rem; }
+  .solution-card p { font-size: 0.87rem; line-height: 1.7; color: rgba(247,243,236,0.65); }
+  .solution-tag { display: inline-block; margin-top: 1.2rem; padding: 0.3rem 0.8rem; border-radius: 2px; font-size: 0.72rem; letter-spacing: 1.5px; text-transform: uppercase; background: rgba(168,213,114,0.15); color: var(--lime); }
+
+  /* ACTION */
+  #action { background: var(--forest); text-align: center; padding: 8rem 4rem; position: relative; overflow: hidden; }
+  #action::before { content: ''; position: absolute; inset: -50%; background: radial-gradient(ellipse 50% 60% at 50% 50%, rgba(168,213,114,0.15) 0%, transparent 60%); animation: pulse 6s ease-in-out infinite; }
+  @keyframes pulse { 0%,100% { transform: scale(1); } 50% { transform: scale(1.1); opacity: 0.7; } }
+  .action-title { font-family: 'Bebas Neue', sans-serif; font-size: clamp(3.5rem, 8vw, 8rem); line-height: 0.95; letter-spacing: 2px; position: relative; z-index: 2; }
+  .action-subtitle { font-size: 1.1rem; color: rgba(247,243,236,0.75); max-width: 500px; margin: 2rem auto 3rem; line-height: 1.7; position: relative; z-index: 2; }
+  .action-btns { display: flex; gap: 1.5rem; justify-content: center; position: relative; z-index: 2; }
+
+  /* FOOTER */
+  footer { background: #070f0a; padding: 3rem 4rem; display: flex; justify-content: space-between; align-items: center; border-top: 1px solid rgba(168,213,114,0.1); }
+  .footer-logo { font-family: 'Bebas Neue', sans-serif; font-size: 1.5rem; letter-spacing: 3px; color: var(--lime); }
+  .footer-note { font-size: 0.8rem; color: rgba(247,243,236,0.4); text-align: right; }
+
+  /* FADE IN */
+  .fade-in { opacity: 0; transform: translateY(30px); transition: opacity 0.8s ease, transform 0.8s ease; }
+  .fade-in.visible { opacity: 1; transform: translateY(0); }
+
+  /* RESPONSIVE */
+  @media (max-width: 900px) {
+    nav { padding: 1rem 1.5rem; }
+    .nav-links { display: none; }
+    section { padding: 5rem 1.5rem; }
+    #hero { padding: 0 1.5rem 4rem; }
+    .hero-stats { display: none; }
+    .hero-globe { width: 80vw; height: 80vw; top: 5%; right: -20%; }
+    .video-grid, .effects-layout, .solutions-grid { grid-template-columns: 1fr; }
+    .effects-left { position: static; }
+    .photo-masonry { columns: 2; }
+    footer { flex-direction: column; gap: 1rem; text-align: center; }
+    .footer-note { text-align: center; }
+  }
+  @media (max-width: 580px) { .photo-masonry { columns: 1; } }
+</style>
+</head>
+<body>
+
+<div class="progress-bar" id="progressBar"></div>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo">ClimateEd</div>
+  <ul class="nav-links">
+    <li><a href="#overview-videos">Overview</a></li>
+    <li><a href="#causes">Causes</a></li>
+    <li><a href="#gallery">Gallery</a></li>
+    <li><a href="#effects">Effects</a></li>
+    <li><a href="#solutions">Solutions</a></li>
+    <li><a href="#action">Act Now</a></li>
+  </ul>
+</nav>
+
+<!-- HERO with background video -->
+<section id="hero">
+  <div class="hero-video-bg">
+    <iframe
+      src="https://www.youtube.com/embed/G4H1N_yXBiA?autoplay=1&mute=1&loop=1&playlist=G4H1N_yXBiA&controls=0&showinfo=0&rel=0&modestbranding=1&enablejsapi=1"
+      allow="autoplay; encrypted-media" allowfullscreen title="Earth background">
+    </iframe>
+  </div>
+  <div class="hero-overlay"></div>
+  <div class="hero-globe"></div>
+  <div class="hero-eyebrow">The most pressing challenge of our era</div>
+  <h1 class="hero-title">Our Planet<br>Is <em>Warming.</em></h1>
+  <p class="hero-subtitle">Climate change is reshaping life on Earth. Understanding its causes, effects, and solutions is the first step toward meaningful action.</p>
+  <div class="hero-cta">
+    <a href="#causes" class="btn-primary">Explore the Science</a>
+    <a href="#action" class="btn-outline">Take Action</a>
+  </div>
+  <div class="hero-stats">
+    <div class="stat-item"><div class="stat-num">1.2°C</div><div class="stat-label">avg warming since 1850</div></div>
+    <div class="stat-item"><div class="stat-num">423ppm</div><div class="stat-label">atmospheric CO₂</div></div>
+    <div class="stat-item"><div class="stat-num">3.6mm</div><div class="stat-label">sea rise per year</div></div>
+  </div>
+  <div class="scroll-hint">SCROLL</div>
+</section>
+
+<!-- OVERVIEW VIDEOS -->
+<section id="overview-videos" class="video-section-bg1">
+  <div class="section-tag">Watch & Learn</div>
+  <h2 class="section-heading fade-in">Climate Change <em style="color:var(--lime);font-style:normal;">Explained</em></h2>
+  <p class="section-intro fade-in">Start with these essential videos to understand the science and scale of the climate crisis.</p>
+  <div class="video-grid">
+    <div class="video-wrap fade-in">
+      <iframe src="https://www.youtube.com/embed/ipVxxxqwBQw" title="Climate Change 101 National Geographic" allowfullscreen allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"></iframe>
+      <div class="video-label"><h4>Climate Change 101</h4><p>National Geographic — A concise overview of what climate change is and why it matters.</p></div>
+    </div>
+    <div class="video-wrap fade-in">
+      <iframe src="https://www.youtube.com/embed/EhAemz1v7dQ" title="What is Climate Change NASA" allowfullscreen allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"></iframe>
+      <div class="video-label"><h4>What Is Climate Change?</h4><p>NASA Goddard — How Earth's climate system works and what humans are changing.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- CAUSES -->
+<section id="causes">
+  <div class="section-tag">Understanding the Problem</div>
+  <h2 class="section-heading fade-in">What Drives <em style="color:var(--lime);font-style:normal;">Climate Change?</em></h2>
+  <p class="section-intro fade-in">The primary driver is human activity — burning fossil fuels, deforestation, and industrial processes release greenhouse gases that trap heat in our atmosphere.</p>
+  <div class="causes-grid">
+    <div class="cause-card fade-in">
+      <span class="cause-number">01</span>
+      <img class="cause-img" src="https://images.unsplash.com/photo-1508193638397-1c4234db14d8?w=600&q=80" alt="Factory burning fossil fuels">
+      <h3 class="cause-title">Fossil Fuel Combustion</h3>
+      <p class="cause-desc">Coal, oil, and natural gas burning releases CO₂ and methane — accounting for over 75% of global greenhouse gas emissions. Power plants, vehicles, and industry are the biggest contributors.</p>
+    </div>
+    <div class="cause-card fade-in">
+      <span class="cause-number">02</span>
+      <img class="cause-img" src="https://images.unsplash.com/photo-1473341304170-971dccb5ac1e?w=600&q=80" alt="Deforestation aerial view">
+      <h3 class="cause-title">Deforestation</h3>
+      <p class="cause-desc">Forests absorb CO₂. When trees are cleared for agriculture or logging, stored carbon is released and Earth loses a critical carbon sink. We lose about 15 billion trees each year.</p>
+    </div>
+    <div class="cause-card fade-in">
+      <span class="cause-number">03</span>
+      <img class="cause-img" src="https://images.unsplash.com/photo-1625246333195-78d9c38ad449?w=600&q=80" alt="Agricultural land">
+      <h3 class="cause-title">Industrial Agriculture</h3>
+      <p class="cause-desc">Livestock produce methane through digestion. Rice paddies, synthetic fertilizers, and land clearing for farming collectively contribute 18–20% of global greenhouse gas emissions.</p>
+    </div>
+    <div class="cause-card fade-in">
+      <span class="cause-number">04</span>
+      <img class="cause-img" src="https://images.unsplash.com/photo-1611284446314-60a58ac0deb9?w=600&q=80" alt="Industrial pollution">
+      <h3 class="cause-title">Industrial Processes</h3>
+      <p class="cause-desc">Cement production, steel manufacturing, and chemical processing release CO₂ and other potent greenhouse gases, many of which have warming potential thousands of times greater than CO₂.</p>
+    </div>
+    <div class="cause-card fade-in">
+      <span class="cause-number">05</span>
+      <img class="cause-img" src="https://images.unsplash.com/photo-1532996122724-e3c354a0b15b?w=600&q=80" alt="Waste and landfill">
+      <h3 class="cause-title">Waste & Landfills</h3>
+      <p class="cause-desc">Decomposing organic waste in landfills produces methane. Poor waste management, open burning, and wastewater treatment add significant greenhouse gases to the atmosphere annually.</p>
+    </div>
+    <div class="cause-card fade-in">
+      <span class="cause-number">06</span>
+      <img class="cause-img" src="https://images.unsplash.com/photo-1581093803699-1c8ab37d7c8e?w=600&q=80" alt="Urban transportation">
+      <h3 class="cause-title">Transportation</h3>
+      <p class="cause-desc">Cars, trucks, ships, and aeroplanes burn petroleum fuels and are responsible for approximately 16% of global CO₂ emissions — with air travel being one of the fastest-growing sources.</p>
+    </div>
+  </div>
+</section>
+
+<!-- PHOTO GALLERY -->
+<section id="gallery" style="background:#071209; padding:6rem 4rem;">
+  <div class="section-tag">Visual Evidence</div>
+  <h2 class="gallery-heading fade-in">THE WORLD <span style="color:var(--lime)">IN CRISIS</span></h2>
+  <p class="gallery-sub fade-in">A photographic record of climate change — from melting glaciers to devastating wildfires. Click any image to enlarge.</p>
+  <div class="photo-masonry fade-in">
+    <div class="photo-item" onclick="openLightbox(this)">
+      <img src="https://images.unsplash.com/photo-1611273426858-450d8e3c9fce?w=700&q=85" alt="Melting glacier ice">
+      <div class="photo-caption">🧊 Melting glaciers — Arctic</div>
+    </div>
+    <div class="photo-item" onclick="openLightbox(this)">
+      <img src="https://images.unsplash.com/photo-1504701954957-2010ec3bcec1?w=700&q=85" alt="Wildfire burning forest">
+      <div class="photo-caption">🔥 Wildfire consuming forest — California</div>
+    </div>
+    <div class="photo-item" onclick="openLightbox(this)">
+      <img src="https://images.unsplash.com/photo-1547483238-f400e65ccd56?w=700&q=85" alt="Drought cracked earth">
+      <div class="photo-caption">🌵 Severe drought — cracked earth</div>
+    </div>
+    <div class="photo-item" onclick="openLightbox(this)">
+      <img src="https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=700&q=85" alt="Ocean pollution plastic">
+      <div class="photo-caption">🐠 Ocean plastic pollution</div>
+    </div>
+    <div class="photo-item" onclick="openLightbox(this)">
+      <img src="https://images.unsplash.com/photo-1444492417251-9c84a5fa18e0?w=700&q=85" alt="Hurricane from space">
+      <div class="photo-caption">🌀 Hurricane seen from orbit</div>
+    </div>
+    <div class="photo-item" onclick="openLightbox(this)">
+      <img src="https://images.unsplash.com/photo-1473341304170-971dccb5ac1e?w=700&q=85" alt="Amazon deforestation aerial">
+      <div class="photo-caption">🌳 Amazon deforestation — aerial view</div>
+    </div>
+    <div class="photo-item" onclick="openLightbox(this)">
+      <img src="https://images.unsplash.com/photo-1509391366360-2e959784a276?w=700&q=85" alt="Solar panels renewable energy">
+      <div class="photo-caption">☀️ Solar energy — a path forward</div>
+    </div>
+    <div class="photo-item" onclick="openLightbox(this)">
+      <img src="https://images.unsplash.com/photo-1466611653911-95081537e5b7?w=700&q=85" alt="Wind turbines at sunset">
+      <div class="photo-caption">💨 Wind turbines at dusk</div>
+    </div>
+    <div class="photo-item" onclick="openLightbox(this)">
+      <img src="https://images.unsplash.com/photo-1542601906990-b4d3fb778b09?w=700&q=85" alt="Reforestation tree planting">
+      <div class="photo-caption">🌱 Reforestation efforts worldwide</div>
+    </div>
+    <div class="photo-item" onclick="openLightbox(this)">
+      <img src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=700&q=85" alt="Snowy mountain peaks">
+      <div class="photo-caption">🏔️ Receding snowcaps — Alps</div>
+    </div>
+    <div class="photo-item" onclick="openLightbox(this)">
+      <img src="https://images.unsplash.com/photo-1508193638397-1c4234db14d8?w=700&q=85" alt="Industrial smoke stacks">
+      <div class="photo-caption">🏭 Industrial emissions into the sky</div>
+    </div>
+    <div class="photo-item" onclick="openLightbox(this)">
+      <img src="https://images.unsplash.com/photo-1574323347407-f5e1ad6d020b?w=700&q=85" alt="Sustainable farming green fields">
+      <div class="photo-caption">🌾 Sustainable agriculture in practice</div>
+    </div>
+  </div>
+</section>
+
+<!-- LIGHTBOX -->
+<div class="lightbox" id="lightbox" onclick="closeLightbox(event)">
+  <button class="lightbox-close" onclick="closeLightbox()">×</button>
+  <img id="lightbox-img" src="" alt="">
+  <div class="lightbox-caption" id="lightbox-caption"></div>
+</div>
+
+<!-- EFFECTS -->
+<section id="effects">
+  <div class="section-tag">Consequences</div>
+  <div class="effects-layout">
+    <div class="effects-left">
+      <h2 class="section-heading fade-in">How It <em style="color:var(--fire);font-style:normal;">Impacts</em><br>Our World</h2>
+      <p class="section-intro fade-in">Rising temperatures trigger a cascade of effects — from melting ice caps and extreme weather to food insecurity and mass displacement of communities.</p>
+      <div class="effects-visual fade-in">
+        <img src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=800&q=80" alt="Glaciers melting">
+        <div class="temp-badge"><div class="temp-num">+1.2°C</div><div class="temp-label">since pre-industrial era</div></div>
+      </div>
+    </div>
+    <div class="effects-list">
+      <div class="effect-item fade-in"><div class="effect-icon">🌊</div><div><h3>Rising Sea Levels</h3><p>Melting glaciers and thermal expansion of seawater are raising sea levels at 3.6mm per year. Coastal cities and island nations face flooding, erosion, and eventual submersion — threatening millions of lives.</p></div></div>
+      <div class="effect-item fade-in"><div class="effect-icon">🔥</div><div><h3>Extreme Weather Events</h3><p>Warmer oceans fuel stronger hurricanes, droughts, and heatwaves. The frequency of Category 4–5 tropical cyclones has increased significantly and record-breaking temperatures are set almost every year.</p></div></div>
+      <div class="effect-item fade-in"><div class="effect-icon">🧊</div><div><h3>Melting Arctic Ice</h3><p>Arctic sea ice is shrinking at 13% per decade. This disrupts polar ecosystems and accelerates warming by reducing Earth's reflective surface — a dangerous feedback loop.</p></div></div>
+      <div class="effect-item fade-in"><div class="effect-icon">🌿</div><div><h3>Biodiversity Loss</h3><p>Species unable to adapt fast enough are facing extinction. Coral reefs — which support 25% of marine life — are bleaching at unprecedented rates. Over 1 million species are now at risk.</p></div></div>
+      <div class="effect-item fade-in"><div class="effect-icon">🍽️</div><div><h3>Food & Water Insecurity</h3><p>Changing rainfall patterns, prolonged droughts, and crop failures are reducing agricultural yields. 2 billion people already face water scarcity — a number expected to double by 2050.</p></div></div>
+      <div class="effect-item fade-in"><div class="effect-icon">🏚️</div><div><h3>Climate Displacement</h3><p>Floods, droughts, and extreme heat force communities from their homes. The World Bank projects up to 216 million internal climate migrants by 2050 — disproportionately affecting the Global South.</p></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- EFFECTS VIDEOS -->
+<section class="video-section-bg2" style="padding:6rem 4rem;">
+  <div class="section-tag">See the Impact</div>
+  <h2 class="section-heading fade-in">Effects <em style="color:var(--fire);font-style:normal;">In Action</em></h2>
+  <p class="section-intro fade-in">Witness the real-world consequences of climate change through these documentary clips.</p>
+  <div class="video-grid">
+    <div class="video-wrap fade-in">
+      <iframe src="https://www.youtube.com/embed/hqJ_BDTlgE0" title="Effects of climate change" allowfullscreen allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"></iframe>
+      <div class="video-label"><h4>Effects of Climate Change</h4><p>Visual documentation of rising seas, wildfires, and ecosystem collapse across the globe.</p></div>
+    </div>
+    <div class="video-wrap fade-in">
+      <iframe src="https://www.youtube.com/embed/Sv7OHpuqNKM" title="Melting ice and rising seas" allowfullscreen allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"></iframe>
+      <div class="video-label"><h4>Melting Ice & Rising Seas</h4><p>Scientists document accelerating ice loss at the poles and what it means for coastlines worldwide.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- SOLUTIONS -->
+<section id="solutions">
+  <div class="section-tag">Pathways Forward</div>
+  <h2 class="section-heading fade-in">Solutions That <em style="color:var(--lime);font-style:normal;">Work</em></h2>
+  <p class="section-intro fade-in">The technology and knowledge to solve the climate crisis already exists. What's needed is unprecedented collective will — from governments, businesses, and individuals alike.</p>
+  <img class="solutions-hero-img fade-in" src="https://images.unsplash.com/photo-1509391366360-2e959784a276?w=1200&q=80" alt="Solar panels and wind turbines renewable energy">
+  <div class="solutions-grid">
+    <div class="solution-card sol-1 fade-in">
+      <img src="https://images.unsplash.com/photo-1466611653911-95081537e5b7?w=600&q=80" alt="Wind energy">
+      <div class="solution-num">SOLUTION 01</div>
+      <h3>Renewable Energy</h3>
+      <p>Transitioning from fossil fuels to solar, wind, hydro, and geothermal power is the single biggest lever we have. Renewables now provide the cheapest electricity in history.</p>
+      <span class="solution-tag">Energy</span>
+    </div>
+    <div class="solution-card sol-2 fade-in">
+      <img src="https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=600&q=80" alt="Electric vehicle">
+      <div class="solution-num">SOLUTION 02</div>
+      <h3>Electrify Transport</h3>
+      <p>Replacing combustion engines with electric vehicles — powered by clean grids — dramatically cuts transport emissions. Public transit expansion also reduces per-capita carbon footprints.</p>
+      <span class="solution-tag">Transport</span>
+    </div>
+    <div class="solution-card sol-3 fade-in">
+      <img src="https://images.unsplash.com/photo-1542601906990-b4d3fb778b09?w=600&q=80" alt="Reforestation">
+      <div class="solution-num">SOLUTION 03</div>
+      <h3>Reforestation</h3>
+      <p>Planting and protecting forests can sequester up to 10 billion tons of CO₂ per year. Protecting existing old-growth forests is even more critical — they store centuries of carbon.</p>
+      <span class="solution-tag">Nature</span>
+    </div>
+    <div class="solution-card sol-4 fade-in">
+      <img src="https://images.unsplash.com/photo-1574323347407-f5e1ad6d020b?w=600&q=80" alt="Sustainable agriculture">
+      <div class="solution-num">SOLUTION 04</div>
+      <h3>Sustainable Agriculture</h3>
+      <p>Regenerative farming, reduced meat consumption, and precision agriculture reduce emissions while improving food security. Plant-rich diets could cut food-related emissions by 70%.</p>
+      <span class="solution-tag">Food</span>
+    </div>
+    <div class="solution-card sol-5 fade-in">
+      <img src="https://images.unsplash.com/photo-1518005020951-eccb494ad742?w=600&q=80" alt="Green buildings">
+      <div class="solution-num">SOLUTION 05</div>
+      <h3>Green Buildings</h3>
+      <p>Buildings consume 40% of global energy. Retrofitting insulation, switching to heat pumps, and designing net-zero structures can massively reduce emissions from heating, cooling, and lighting.</p>
+      <span class="solution-tag">Infrastructure</span>
+    </div>
+    <div class="solution-card sol-6 fade-in">
+      <img src="https://images.unsplash.com/photo-1453928582365-b6ad33cbcf64?w=600&q=80" alt="Climate policy protest">
+      <div class="solution-num">SOLUTION 06</div>
+      <h3>Climate Policy & Justice</h3>
+      <p>Carbon pricing, phasing out fossil fuel subsidies, and international agreements like the Paris Accord create the systemic change needed. Climate justice ensures solutions don't burden the most vulnerable.</p>
+      <span class="solution-tag">Policy</span>
+    </div>
+  </div>
+</section>
+
+<!-- SOLUTIONS VIDEOS -->
+<section class="video-section-bg3" style="padding:6rem 4rem;">
+  <div class="section-tag">Inspire Change</div>
+  <h2 class="section-heading fade-in">Solutions <em style="color:var(--lime);font-style:normal;">In Action</em></h2>
+  <p class="section-intro fade-in">Real people and communities already leading the way toward a sustainable and just future.</p>
+  <div class="video-grid">
+    <div class="video-wrap fade-in">
+      <iframe src="https://www.youtube.com/embed/wbR-5mHI6bo" title="Climate solutions renewable energy" allowfullscreen allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"></iframe>
+      <div class="video-label"><h4>100% Renewable — Is It Possible?</h4><p>Exploring how countries are rapidly transitioning to clean energy grids and what it takes.</p></div>
+    </div>
+    <div class="video-wrap fade-in">
+      <iframe src="https://www.youtube.com/embed/8MsKBc2Czjk" title="Youth climate action" allowfullscreen allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"></iframe>
+      <div class="video-label"><h4>Youth Climate Action</h4><p>Young people worldwide organizing to demand bold climate action from governments and corporations.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ACTION -->
+<section id="action">
+  <h2 class="action-title">THE TIME<br>IS NOW.</h2>
+  <p class="action-subtitle">Every fraction of a degree matters. Every action counts. The decisions we make today will define the world future generations inherit.</p>
+  <div class="action-btns">
+    <a href="https://www.un.org/en/climatechange" target="_blank" class="btn-primary">UN Climate Action</a>
+    <a href="https://www.ipcc.ch/" target="_blank" class="btn-outline">Read IPCC Reports</a>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-logo">ClimateEd</div>
+  <div class="footer-note">Built for education &amp; awareness.<br>Data: IPCC, NASA, NOAA, World Bank. Photos: Unsplash.</div>
+</footer>
+
+<script>
+  // Progress bar
+  window.addEventListener('scroll', () => {
+    const scrolled = (window.scrollY / (document.body.scrollHeight - window.innerHeight)) * 100;
+    document.getElementById('progressBar').style.width = scrolled + '%';
+  });
+
+  // Fade-in on scroll
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((entry, i) => {
+      if (entry.isIntersecting) {
+        setTimeout(() => entry.target.classList.add('visible'), i * 80);
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.1, rootMargin: '0px 0px -50px 0px' });
+  document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+
+  // Smooth scroll nav
+  document.querySelectorAll('a[href^="#"]').forEach(a => {
+    a.addEventListener('click', e => {
+      e.preventDefault();
+      const target = document.querySelector(a.getAttribute('href'));
+      if (target) target.scrollIntoView({ behavior: 'smooth' });
+    });
+  });
+
+  // Lightbox
+  function openLightbox(el) {
+    const img = el.querySelector('img');
+    const cap = el.querySelector('.photo-caption');
+    document.getElementById('lightbox-img').src = img.src.replace('w=700', 'w=1400');
+    document.getElementById('lightbox-img').alt = img.alt;
+    document.getElementById('lightbox-caption').textContent = cap ? cap.textContent : '';
+    document.getElementById('lightbox').classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+  function closeLightbox(e) {
+    if (!e || e.target === document.getElementById('lightbox') || e.target.classList.contains('lightbox-close')) {
+      document.getElementById('lightbox').classList.remove('open');
+      document.body.style.overflow = '';
+    }
+  }
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') { document.getElementById('lightbox').classList.remove('open'); document.body.style.overflow = ''; } });
+</script>
+</body>
+</html>
